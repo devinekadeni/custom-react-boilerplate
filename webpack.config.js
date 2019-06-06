@@ -1,79 +1,82 @@
 const path = require('path')
+const webpackMerge = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
+const webpackMode = env => require(`./config/webpack/webpack.${env}.js`)
+
 module.exports = ({ mode }) => {
   const isDevelopment = mode === 'development'
 
-  return {
-    mode: mode,
-    devtool: isDevelopment ? 'inline-source-map' : '',
-    devServer: {
-      contentBase: '/dist',
-    },
-    optimization: {
-      splitChunks: {
-        chunks: 'all',
+  return webpackMerge(
+    {
+      mode: mode,
+      entry: {
+        app: './src/index.js',
       },
-    },
-    entry: {
-      app: './src/index.js',
-      print: './src/print.js',
-    },
-    output: {
-      filename: '[name].[hash].bundle.js',
-      path: path.resolve(__dirname, 'dist'),
-      // publicPath: '/', // uncomment this if running application on server
-    },
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: '/node_modules/',
-          use: ['babel-loader'],
-        },
-        {
-          test: /\.css$/,
-          use: [
-            isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
-            'css-loader',
-          ],
-        },
-        {
-          test: /\.scss$/,
-          use: [
-            {
-              loader: isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                localIdentName: '[name]__[local]___[hash:base64:5]',
-                camelCase: true,
-                sourceMap: isDevelopment,
+      output: {
+        filename: isDevelopment ? '[name].bundle.js' : '[name].[hash].bundle.js',
+        path: path.resolve(__dirname, 'dist'),
+        // publicPath: '/', // uncomment this if running application on server
+      },
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            include: path.resolve(__dirname, 'src'),
+            use: ['babel-loader'],
+          },
+          {
+            test: /\.css$/,
+            use: [
+              isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+              'css-loader',
+            ],
+          },
+          {
+            test: /\.scss$/,
+            use: [
+              {
+                loader: isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
               },
-            },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: isDevelopment,
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: true,
+                  localIdentName: '[name]__[local]___[hash:base64:5]',
+                  camelCase: true,
+                  sourceMap: isDevelopment,
+                },
               },
-            },
-          ],
-        },
+              {
+                loader: 'sass-loader',
+                options: {
+                  sourceMap: isDevelopment,
+                },
+              },
+            ],
+          },
+          {
+            test: /\.(png|jpg|gif)$/i,
+            use: [
+              {
+                loader: 'url-loader',
+                options: {
+                  limit: 10000,
+                },
+              },
+            ],
+          },
+        ],
+      },
+      plugins: [
+        new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({
+          template: './public/index.html',
+        }),
       ],
     },
-    plugins: [
-      new CleanWebpackPlugin(),
-      new HtmlWebpackPlugin({
-        template: './public/index.html',
-      }),
-      new MiniCssExtractPlugin({
-        filename: isDevelopment ? '[name].css' : '[name].[hash].css',
-        chunkFilename: isDevelopment ? '[id].css' : '[id].[hash].css',
-      }),
-    ],
-  }
+    webpackMode(mode)
+  )
 }
