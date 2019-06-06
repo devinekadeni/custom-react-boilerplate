@@ -2,12 +2,14 @@
   "env": {
     "browser": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "jest/globals": true
   },
   "extends": [
     "eslint:recommended",
     "plugin:import/errors",
     "plugin:react/recommended",
+    "plugin:jest/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:prettier/recommended"
   ],
@@ -23,7 +25,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["react", "import", "jsx-a11y"],
+  "plugins": ["react", "import", "jest", "jsx-a11y"],
   "rules": {
     "react/prop-types": "off",
     "jsx-a11y/anchor-is-valid": "off",
