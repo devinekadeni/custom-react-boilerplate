@@ -64,6 +64,7 @@ module.exports = ({ mode }) => {
                 loader: 'url-loader',
                 options: {
                   limit: 10000,
+                  name: 'assets/[name].[hash:8].[ext]',
                 },
               },
             ],
@@ -74,6 +75,7 @@ module.exports = ({ mode }) => {
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
           template: './public/index.html',
+          // favicon: './public/favicon.ico',
         }),
       ],
     },

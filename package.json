@@ -13,7 +13,7 @@
     "start:server": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Devin Ekadeni",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.1",
